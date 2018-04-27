@@ -4,7 +4,7 @@
 #include <Adafruit_LSM9DS0.h>
 #include <math.h>
   
-Adafruit_LSM9DS0 lsm = Adafruit_LSM9DS0(1000);  // Use I2C, ID #1000
+Adafruit_LSM9DS0 accelerometer = Adafruit_LSM9DS0(1000);  // Use I2C, ID #1000
 
 /* Direction Matrix */
 #define N 1
@@ -29,10 +29,10 @@ void setup(void) {
   Serial.println(F("LSM9DS0 9DOF Sensor Test")); Serial.println("");
   
   /* Initialise the sensor */
-  if(!lsm.begin()) {
+  if(!accelerometer.begin()) {
     /* There was a problem detecting the LSM9DS0 ... check your connections */
     Serial.print(F("Ooops, no LSM9DS0 detected ... Check your wiring or I2C ADDR!"));
-    while(!lsm.begin());
+    while(!accelerometer.begin());
   }
   Serial.println(F("Found LSM9DS0 9DOF"));
   
