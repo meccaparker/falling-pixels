@@ -3,10 +3,15 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM9DS0.h>
 #include <math.h>
-  
-Adafruit_LSM9DS0 lsm = Adafruit_LSM9DS0(1000);  // Use I2C, ID #1000
+
+
+#define MECBRISAM 
+/* Assign a unique base ID for this sensor */   
+Adafruit_LSM9DS0 lsm = Adafruit_LSM9DS0(MECBRISAM);  // Use I2C, ID #MECBRISAM
+
 
 /* Direction Matrix */
+
 #define N 1
 #define NE 2
 #define E 3
@@ -30,27 +35,21 @@ void setup(void) {
   
   /* Initialise the sensor */
   if(!lsm.begin()) {
+    Serial.print("brooo");
     /* There was a problem detecting the LSM9DS0 ... check your connections */
     Serial.print(F("Ooops, no LSM9DS0 detected ... Check your wiring or I2C ADDR!"));
     while(!lsm.begin());
   }
   Serial.println(F("Found LSM9DS0 9DOF"));
   
-  /* Setup the sensor gain and integration time */
   lsm.setupAccel(lsm.LSM9DS0_ACCELRANGE_2G);
-  
-  /* We're ready to go! */
+
   Serial.println("");
 }
 
-/**************************************************************************/
-/*
-    Arduino loop function, called once 'setup' is complete (your own code
-    should go here)
-*/
-/**************************************************************************/
+
+/* Map accelerometer angle to direction in the direction matrix */
 int map_angle(float angle) {
-  Serial.println(angle);
   if (0.0 <= angle && angle < 45.0) return NE;
   else if (45.0 <= angle && angle < 90.0) return N;
   else if (90.0 <= angle && angle < 135.0) return NW;
@@ -62,7 +61,7 @@ int map_angle(float angle) {
 }
 
 void check_sensor() {
-  /* Get a new sensor event */ 
+  /* Get a new accelerometer event */ 
   sensors_event_t accel, mag, gyro, temp;
 
   lsm.getEvent(&accel, &mag, &gyro, &temp); 
@@ -73,7 +72,7 @@ void check_sensor() {
   float angle = atan2(x_accel, y_accel) * 180.0/M_PI;
   int dir = map_angle(angle);
 
-  Serial.print("  Direction: ");
+  Serial.print("Direction: ");
   Serial.println(dir);
   Serial.println("**********************\n");
 }
